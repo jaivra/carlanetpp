@@ -129,11 +129,13 @@ void CarlanetManager::updateNodesPosition(std::list<carla_api_base::actor_positi
 
     // Update the mobility of actors or create new ones in they do not exist
     for(auto const &actor : actors){
-        if (knownActors.find(actor.actor_id) == knownActors.end()){  //NOT FOUND
+        if (knownActors.find(actor.actor_id) == knownActors.end()){
+            //NOT FOUND
             createAndInitializeActor(actor);
         }
         else{
-            knownActors.erase(actor.actor_id);  //OK Found I can update it
+            //OK Found I can update it
+            knownActors.erase(actor.actor_id);
         }
 
         Coord position = Coord(actor.position[0], actor.position[1], actor.position[2]);
@@ -178,6 +180,7 @@ void CarlanetManager::handleMessage(cMessage *msg)
  * Dynamic creation/destroying actors
  * ********************************** */
 void CarlanetManager::createAndInitializeActor(carla_api_base::actor_position newActor){
+    //TODO: allow multiple type of modules based on passing string, remove is_net_active, add actor_type 
     auto newActorModuleType = newActor.is_net_active ? networkActiveModuleType : networkPassiveModuleType;
     //auto newActorModuleName = newActor.is_net_active ? networkActiveModuleName : networkPassiveModuleName;
 

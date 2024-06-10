@@ -84,6 +84,38 @@ namespace carla_api{
     };
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(simulation_step, message_type, carla_timestep, timestamp)
 
+    //TODO: remove
+    struct generic_message {
+        std::string message_type = "GENERIC_MESSAGE";
+        double timestamp;
+        json user_defined;
+    };
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(generic_message, message_type, timestamp, user_defined)
+    /*
+    TODO: add
+
+    struct world_generic_message {
+        std::string message_type = "WORLD_GENERIC_MESSAGE";
+        double timestamp;
+        json user_defined;
+    };
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(world_generic_message, message_type, timestamp, user_defined)
+
+    struct actor_generic_message {
+        std::string message_type = "ACTOR_GENERIC_MESSAGE";
+        double timestamp;
+        json user_defined;
+    };
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(actor_generic_message, message_type, timestamp, user_defined)
+
+    struct agent_generic_message {
+        std::string message_type = "AGENT_GENERIC_MESSAGE";
+        double timestamp;
+        json user_defined;
+    };
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(agent_generic_message, message_type, timestamp, user_defined)
+    */
+
 
     /* CARLA --> OMNET */
     struct updated_postion {
@@ -93,20 +125,37 @@ namespace carla_api{
     };
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(updated_postion, message_type, actor_positions, simulation_status)
 
-
-    struct generic_message {
-        std::string message_type = "GENERIC_MESSAGE";
-        double timestamp;
-        json user_defined;
-    };
-    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(generic_message, message_type, timestamp, user_defined)
-
-
+    //TODO: remove
     struct generic_response {
         std::string message_type = "GENERIC_RESPONSE";
         json user_defined;
         int simulation_status;
     };
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(generic_response, message_type, user_defined ,simulation_status)
+
+    /*
+    TODO: add
+
+    struct world_generic_response {
+        std::string message_type = "WORLD_GENERIC_RESPONSE";
+        json user_defined;
+        int simulation_status;
+    };
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(world_generic_response, message_type, user_defined ,simulation_status)
+
+    struct actor_generic_response {
+        std::string message_type = "ACTOR_GENERIC_RESPONSE";
+        json user_defined;
+        int simulation_status;
+    };
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(actor_generic_response, message_type, user_defined ,simulation_status)
+
+    struct agent_generic_response {
+        std::string message_type = "AGENT_GENERIC_RESPONSE";
+        json user_defined;
+        int simulation_status;
+    };
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(agent_generic_response, message_type, user_defined ,simulation_status)
+    */
 
 }

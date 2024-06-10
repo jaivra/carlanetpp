@@ -101,6 +101,11 @@ private:
 
 
 public:
+
+    //TODO implement world_generic_message, actor_generic_message, agent_generic_message
+
+    //TODO remove generic_message
+
     //API used by applications
     /**
      * This is a generic API that accepts and return json type
