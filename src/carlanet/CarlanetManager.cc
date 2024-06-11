@@ -180,9 +180,9 @@ void CarlanetManager::handleMessage(cMessage *msg)
  * Dynamic creation/destroying actors
  * ********************************** */
 void CarlanetManager::createAndInitializeActor(carla_api_base::actor_position newActor){
-    //TODO: allow multiple type of modules based on passing string, remove is_net_active, add actor_type 
-    auto newActorModuleType = newActor.is_net_active ? networkActiveModuleType : networkPassiveModuleType;
-    //auto newActorModuleName = newActor.is_net_active ? networkActiveModuleName : networkPassiveModuleName;
+    //TODO: allow multiple type of modules based on passing string, remove is_net_active, add actor_type
+    //auto newActorModuleType = newActor.is_net_active ? networkActiveModuleType : networkPassiveModuleType;
+    auto newActorModuleType = networkActiveModuleType;
 
     cModule* root = getSimulation()->getSystemModule();
     cModuleType *actorType = cModuleType::get(newActorModuleType);
