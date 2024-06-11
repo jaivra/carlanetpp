@@ -91,8 +91,6 @@ namespace carla_api{
         json user_defined;
     };
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(generic_message, message_type, timestamp, user_defined)
-    /*
-    TODO: add
 
     struct world_generic_message {
         std::string message_type = "WORLD_GENERIC_MESSAGE";
@@ -100,6 +98,8 @@ namespace carla_api{
         json user_defined;
     };
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(world_generic_message, message_type, timestamp, user_defined)
+    /*
+    TODO: add
 
     struct actor_generic_message {
         std::string message_type = "ACTOR_GENERIC_MESSAGE";
@@ -133,9 +133,6 @@ namespace carla_api{
     };
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(generic_response, message_type, user_defined ,simulation_status)
 
-    /*
-    TODO: add
-
     struct world_generic_response {
         std::string message_type = "WORLD_GENERIC_RESPONSE";
         json user_defined;
@@ -143,6 +140,10 @@ namespace carla_api{
     };
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(world_generic_response, message_type, user_defined ,simulation_status)
 
+
+    /*
+    TODO: add
+    
     struct actor_generic_response {
         std::string message_type = "ACTOR_GENERIC_RESPONSE";
         json user_defined;
