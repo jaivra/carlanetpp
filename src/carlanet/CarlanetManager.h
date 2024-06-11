@@ -134,6 +134,26 @@ public:
         return jsonResponseMessage.get<T>();
     }
 
+    // WORLD GENERIC MESSAGE
+    template<typename S, typename T> T sendToAndGetFromCarla_world_generic_message(S requestMessage){
+        json jsonRequestMessage = requestMessage;
+        json jsonResponseMessage = sendToAndGetFromCarla_world_generic_message(jsonRequestMessage);
+        return jsonResponseMessage.get<T>();
+    }
+
+    json sendToAndGetFromCarla_world_generic_message(json requestMessage){
+        carla_api::world_generic_message toCarlaMessage;
+        toCarlaMessage.user_defined = requestMessage;
+        toCarlaMessage.timestamp = simTime().dbl();
+
+        json jsonMsg = toCarlaMessage;
+        sendToCarla(jsonMsg);
+
+        auto jsonResp = receiveFromCarla<carla_api::world_generic_response>(10.0);
+        return jsonResp.user_defined;
+
+    }
+
 };
 
 #endif
