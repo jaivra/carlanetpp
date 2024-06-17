@@ -25,7 +25,7 @@ class CarlaInetMobility : public inet::MobilityBase
 {
 public:
     // Initialize the position, velocity, and rotation of the actor.
-    virtual void preInitialize(const inet::Coord& position, const inet::Coord& velocity, const inet::Quaternion& rotation);
+    virtual void preInitialize(const std::string carlaID, const inet::Coord& position, const inet::Coord& velocity, const inet::Quaternion& rotation);
 
     // Overrides the base class function to perform initialization tasks at a specified stage.
     virtual void initialize(int stage) override;
@@ -54,6 +54,9 @@ public:
     // Returns the type of the Carla actor.
     string getCarlaActorType() { return carlaActorType; }
 
+    // Returns the Carla id.
+    string getCarlaId() { return carla_id; }
+
     // Returns the configuration parameters of the Carla actor.
     // This method is used by the CarlanetManager to retrieve the configuration for a specific actor that needs to be sent to pycarlanet.
     const cValueMap* getCarlaActorConfiguration() { return carlaActorConfiguration; }
@@ -68,6 +71,7 @@ protected:
     // Updates the Carla actor configuration from parameter values.
     virtual void updateCarlaActorConfigurationFromParam(cValueMap* confMap) {};
 
+    std::string carla_id;
     inet::Coord lastVelocity;
     inet::Quaternion lastAngularVelocity;
 

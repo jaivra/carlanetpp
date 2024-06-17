@@ -30,11 +30,13 @@ void CarlaInetMobility::setInitialPosition(){
     }
 }
 
-void CarlaInetMobility::preInitialize(const inet::Coord& position, const inet::Coord& velocity,  const inet::Quaternion& rotation){
+void CarlaInetMobility::preInitialize(const std::string carlaID, const inet::Coord& position, const inet::Coord& velocity,  const inet::Quaternion& rotation){
     preInitialized = true;
+    carla_id = carlaID;
     lastPosition = position;
     lastVelocity = velocity;
     lastOrientation = rotation;
+
 }
 
 

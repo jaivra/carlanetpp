@@ -46,6 +46,18 @@ void CarlanetManager::initialize(int stage)
         timeout_ms = par("communicationTimeoutms");
         simulationTimeStep = par("simulationTimeStep");
 
+        /*std::map<std::string,cValue> x = check_and_cast<cValueMap*>(par("moduleType").objectValue())->getFields();
+
+        for (const auto& e : x){
+            std::cout << "map: " << e.first << e.second.stringValue() << endl;
+        }
+        auto it = x.find(keyToFind);
+        if (it != myMap.end()) {
+            std::cout << "Value for key '" << keyToFind << "': " << it->second << "\n";
+        } else {
+            std::cout << "Key '" << keyToFind << "' not found.\n";
+        }*/
+
         networkActiveModuleType = par("networkActiveModuleType").stringValue();
         networkPassiveModuleType = par("networkPassiveModuleType").stringValue();
         connect();
@@ -58,8 +70,9 @@ void CarlanetManager::initialize(int stage)
 
 
 void CarlanetManager::registerMobilityModule(CarlaInetMobility *mod){
-    const char* mobileNodeName = mod->getParentModule()->getFullName();
-    modulesToTrack.insert(pair<string,CarlaInetMobility*>(string(mobileNodeName), mod));
+    //const char* mobileNodeName = mod->getParentModule()->getFullName();
+    //std::cout << "registerMobilityModule " << mobileNodeName <<  endl;
+    modulesToTrack.insert(pair<string,CarlaInetMobility*>(mod->getCarlaId(), mod));
 }
 
 
@@ -95,7 +108,7 @@ void CarlanetManager::initializeCarla(){
     // I expect to receive INIT_COMPLETE message
     carla_api::init_completed response = receiveFromCarla<carla_api::init_completed>(100.0);
     // Carla informs about the intial timestamp, so I schedule the first similation step at that timestamp
-    EV << "Initialization completed" << response.initial_timestamp <<  endl;
+    EV << "Initialization completed " << response.initial_timestamp <<  endl;
     updateNodesPosition(response.actor_positions);
     //
     initial_timestamp = simTime() + response.initial_timestamp;
@@ -113,9 +126,18 @@ void CarlanetManager::doSimulationTimeStep(){
     msg.carla_timestep = simulationTimeStep;
     msg.timestamp = simTime().dbl();
     json jsonMsg = msg;
+    EV << "socket -> " << jsonMsg.dump() <<  endl;
     sendToCarla(jsonMsg);
     // I expect updated_postion message
     carla_api::updated_postion response = receiveFromCarla<carla_api::updated_postion>();
+
+    json jsonResponse = response;
+    EV << "socket <-" << jsonResponse.dump() << endl;
+
+    //TODO: remove, test world_generic_message
+    //carla_api::simple_string msg_wge;
+    //msg_wge.message = "from omnet";
+    //auto res = sendToAndGetFromCarla_world_generic_message<carla_api::simple_string, carla_api::simple_string>(msg_wge);
 
     //Update position of all nodes in response
 
@@ -129,19 +151,18 @@ void CarlanetManager::updateNodesPosition(std::list<carla_api_base::actor_positi
 
     // Update the mobility of actors or create new ones in they do not exist
     for(auto const &actor : actors){
-        if (knownActors.find(actor.actor_id) == knownActors.end()){
-            //NOT FOUND
+        if (knownActors.find(actor.actor_id) == knownActors.end()){  //NOT FOUND
             createAndInitializeActor(actor);
         }
         else{
-            //OK Found I can update it
-            knownActors.erase(actor.actor_id);
+            knownActors.erase(actor.actor_id);  //OK Found I can update it
         }
 
         Coord position = Coord(actor.position[0], actor.position[1], actor.position[2]);
         Coord velocity = Coord(actor.velocity[0],actor.velocity[1],actor.velocity[2]);
         Quaternion rotation = Quaternion(EulerAngles(rad(actor.rotation[0]),rad(actor.rotation[1]),rad(actor.rotation[2])));
         modulesToTrack[actor.actor_id]->nextPosition(position, velocity, rotation);
+
     }
 
     // remove actors which where known but CARLA has just destroyed
@@ -180,24 +201,29 @@ void CarlanetManager::handleMessage(cMessage *msg)
  * Dynamic creation/destroying actors
  * ********************************** */
 void CarlanetManager::createAndInitializeActor(carla_api_base::actor_position newActor){
-    //TODO: allow multiple type of modules based on passing string, remove is_net_active, add actor_type
-    //auto newActorModuleType = newActor.is_net_active ? networkActiveModuleType : networkPassiveModuleType;
     auto newActorModuleType = networkActiveModuleType;
+    //auto newActorModuleName = newActor.is_net_active ? networkActiveModuleName : networkPassiveModuleName;
+
+    EV << "module type from carla: " << newActor.type << endl;
 
     cModule* root = getSimulation()->getSystemModule();
-    cModuleType *actorType = cModuleType::get(newActorModuleType);
-    cModule* new_mod = actorType->create(newActor.actor_id.c_str(), root);
-    new_mod->finalizeParameters();
-    new_mod->buildInside();
-    new_mod->scheduleStart(simTime());
+    int i = root->getSubmoduleVectorSize(newActor.type.c_str());
+    root->setSubmoduleVectorSize(newActor.type.c_str(), i+1);
+    cModuleType *actorType = cModuleType::get(newActorModuleType); //TODO:
+    cModule* new_mod = actorType->create(newActor.type.c_str(), root, i);
 
+    new_mod->finalizeParameters();
+
+    new_mod->buildInside();
+
+    new_mod->scheduleStart(simTime());
 
     // Pre initialize mobility
     Coord position = Coord(newActor.position[0], newActor.position[1], newActor.position[2]);
     Coord velocity = Coord(newActor.velocity[0],newActor.velocity[1],newActor.velocity[2]);
     Quaternion rotation = Quaternion(EulerAngles(rad(newActor.rotation[0]),rad(newActor.rotation[1]),rad(newActor.rotation[2])));
     auto CarlaInetMobilityMod = check_and_cast<CarlaInetMobility *>(new_mod->getSubmodule("mobility"));
-    CarlaInetMobilityMod->preInitialize(position, velocity, rotation);
+    CarlaInetMobilityMod->preInitialize(newActor.actor_id, position, velocity, rotation); //DONE TODO: carlaid
 
     // The INET visualizer listens to model change notifications on the
     // network object by default. We assume this is our parent.
@@ -206,6 +232,8 @@ void CarlanetManager::createAndInitializeActor(carla_api_base::actor_position ne
     root->emit(POST_MODEL_CHANGE, notification, NULL);
 
     new_mod->callInitialize();
+
+    std::cout << "Created module: " << new_mod->getFullPath() << endl;
 
 }
 

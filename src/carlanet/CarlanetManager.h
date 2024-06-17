@@ -91,6 +91,7 @@ private:
     int timeout_ms;
     cMessage *simulationTimeStepEvent =  new cMessage("simulationTimeStep");
     map<string,CarlaInetMobility*> modulesToTrack = map<string,CarlaInetMobility*>();
+    //map<string,CarlaInetMobility*> modulesToTrack = map<string,CarlaInetMobility*>();
 
 
     //Handlers for dynamic actor creation/destroying
@@ -101,11 +102,6 @@ private:
 
 
 public:
-
-    //TODO implement world_generic_message, actor_generic_message, agent_generic_message
-
-    //TODO remove generic_message
-
     //API used by applications
     /**
      * This is a generic API that accepts and return json type
@@ -140,18 +136,17 @@ public:
         json jsonResponseMessage = sendToAndGetFromCarla_world_generic_message(jsonRequestMessage);
         return jsonResponseMessage.get<T>();
     }
-
     json sendToAndGetFromCarla_world_generic_message(json requestMessage){
         carla_api::world_generic_message toCarlaMessage;
         toCarlaMessage.user_defined = requestMessage;
         toCarlaMessage.timestamp = simTime().dbl();
-
         json jsonMsg = toCarlaMessage;
+        EV << "socket -> " << jsonMsg.dump() <<  endl;
         sendToCarla(jsonMsg);
-
         auto jsonResp = receiveFromCarla<carla_api::world_generic_response>(10.0);
+        json res = jsonResp;
+        EV << "socket <- " << res.dump() <<  endl;
         return jsonResp.user_defined;
-
     }
 
 };

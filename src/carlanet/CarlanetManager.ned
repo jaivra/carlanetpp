@@ -17,12 +17,24 @@ simple CarlanetManager
         //bool autoShutdown = default(true);  // Shutdown module as soon as no more vehicles are in the simulation
 		object extraInitParams = default(parseJSON("{}"));
 		
+
+		
 		
 		//Parameters for dynamically generated actors
 		// IMPORTANT: all the node types have to use CarlaInetMobility (or module that inherits from it) as mobility module
 		string networkActiveModuleType;  		// TODO allow multiple type based on prefixes
 		string networkPassiveModuleType = default("inet.node.base.NodeBase");  // TODO allow multiple type based on prefixes
 		
+		object moduleType;
+		//string moduleName;
+		
+		//typeMapping between pycarlanet.ActorType and ModuleType, ModuleName in omnet
+		//string typeMapping_Sensor;
+        //string typeMapping_Spectator;
+        //string typeMapping_Traffic_sign;
+        //string typeMapping_Traffic_light;
+        //string typeMapping_Vehicle;
+        //string typeMapping_Walkers;
 		
         @display("i=block/cogwheel");
 }
