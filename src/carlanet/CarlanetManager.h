@@ -91,6 +91,9 @@ private:
     int timeout_ms;
     cMessage *simulationTimeStepEvent =  new cMessage("simulationTimeStep");
     map<string,CarlaInetMobility*> modulesToTrack = map<string,CarlaInetMobility*>();
+
+    map<string,cValue> moduleType;
+    map<string,cValue> moduleName;
     //map<string,CarlaInetMobility*> modulesToTrack = map<string,CarlaInetMobility*>();
 
 

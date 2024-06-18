@@ -46,18 +46,10 @@ void CarlanetManager::initialize(int stage)
         timeout_ms = par("communicationTimeoutms");
         simulationTimeStep = par("simulationTimeStep");
 
-        /*std::map<std::string,cValue> x = check_and_cast<cValueMap*>(par("moduleType").objectValue())->getFields();
+        moduleType = check_and_cast<cValueMap*>(par("moduleType").objectValue())->getFields();
+        moduleName = check_and_cast<cValueMap*>(par("moduleName").objectValue())->getFields();
 
-        for (const auto& e : x){
-            std::cout << "map: " << e.first << e.second.stringValue() << endl;
-        }
-        auto it = x.find(keyToFind);
-        if (it != myMap.end()) {
-            std::cout << "Value for key '" << keyToFind << "': " << it->second << "\n";
-        } else {
-            std::cout << "Key '" << keyToFind << "' not found.\n";
-        }*/
-
+        //TODO: remove
         networkActiveModuleType = par("networkActiveModuleType").stringValue();
         networkPassiveModuleType = par("networkPassiveModuleType").stringValue();
         connect();
@@ -100,6 +92,16 @@ void CarlanetManager::initializeCarla(){
     msg.moving_actors = movingActorList;
     msg.user_defined = getExtraInitParams();
     msg.timestamp = simTime().dbl();
+
+    //std::map<std::string,cValue> moduleType = check_and_cast<cValueMap*>(par("moduleType").objectValue())->getFields();
+    //std::map<std::string,cValue> moduleName = check_and_cast<cValueMap*>(par("moduleName").objectValue())->getFields();
+    std::vector<std::string> intersection;
+    for (const auto& e : moduleType){
+        if (moduleName.find(e.first) != moduleName.end()) {
+            intersection.push_back(e.first);
+        }
+    }
+    msg.actor_types = intersection;
 
     json jsonMsg = msg;
 
@@ -201,16 +203,21 @@ void CarlanetManager::handleMessage(cMessage *msg)
  * Dynamic creation/destroying actors
  * ********************************** */
 void CarlanetManager::createAndInitializeActor(carla_api_base::actor_position newActor){
-    auto newActorModuleType = networkActiveModuleType;
+    //auto newActorModuleType = moduleType[];
     //auto newActorModuleName = newActor.is_net_active ? networkActiveModuleName : networkPassiveModuleName;
+    auto posModuleType = moduleType.find(newActor.type);
+    std::string newActorModuleType = posModuleType->second.stringValue();
 
-    EV << "module type from carla: " << newActor.type << endl;
+    auto posModuleName = moduleName.find(newActor.type);
+    std::string newActorModuleName = posModuleName->second.stringValue();
+
+    std::cout << "module type and name: " << newActorModuleType.c_str() << " - " << newActorModuleName.c_str() << endl;
 
     cModule* root = getSimulation()->getSystemModule();
-    int i = root->getSubmoduleVectorSize(newActor.type.c_str());
-    root->setSubmoduleVectorSize(newActor.type.c_str(), i+1);
-    cModuleType *actorType = cModuleType::get(newActorModuleType); //TODO:
-    cModule* new_mod = actorType->create(newActor.type.c_str(), root, i);
+    int i = root->getSubmoduleVectorSize(newActorModuleName.c_str());
+    root->setSubmoduleVectorSize(newActorModuleName.c_str(), i+1);
+    cModuleType *actorType = cModuleType::get(newActorModuleType.c_str());
+    cModule* new_mod = actorType->create(newActorModuleName.c_str(), root, i);
 
     new_mod->finalizeParameters();
 

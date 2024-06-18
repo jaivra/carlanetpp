@@ -64,9 +64,10 @@ namespace carla_api{
         carla_api_base::carla_configuration carla_configuration;
 
         json user_defined;
+        json actor_types;
 
     };
-    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(init, message_type, timestamp, run_id, moving_actors,carla_configuration, user_defined)
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(init, message_type, timestamp, run_id, moving_actors,carla_configuration, user_defined, actor_types)
     /* CARLA --> OMNET */
     struct init_completed {
         std::string message_type = "INIT_COMPLETED";

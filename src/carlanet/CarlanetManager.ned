@@ -26,7 +26,7 @@ simple CarlanetManager
 		string networkPassiveModuleType = default("inet.node.base.NodeBase");  // TODO allow multiple type based on prefixes
 		
 		object moduleType;
-		//string moduleName;
+		object moduleName;
 		
 		//typeMapping between pycarlanet.ActorType and ModuleType, ModuleName in omnet
 		//string typeMapping_Sensor;
