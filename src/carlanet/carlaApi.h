@@ -126,6 +126,38 @@ namespace carla_api{
     };
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(world_generic_response, message_type, user_defined ,simulation_status)
 
+    //ACTOR GENERIC MESSAGE
+    /* OMNET --> CARLA*/
+    struct actor_generic_message {
+        std::string message_type = "ACTOR_GENERIC_MESSAGE";
+        double timestamp;
+        json user_defined;
+    };
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(actor_generic_message, message_type, timestamp, user_defined)
+    /* CARLA --> OMNET */
+    struct actor_generic_response {
+        std::string message_type = "ACTOR_GENERIC_RESPONSE";
+        json user_defined;
+        int simulation_status;
+    };
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(actor_generic_response, message_type, user_defined ,simulation_status)
+
+    //AGENT GENERIC MESSAGE
+    /* OMNET --> CARLA*/
+    struct agent_generic_message {
+        std::string message_type = "AGENT_GENERIC_MESSAGE";
+        double timestamp;
+        json user_defined;
+    };
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(agent_generic_message, message_type, timestamp, user_defined)
+    /* CARLA --> OMNET */
+    struct agent_generic_response {
+        std::string message_type = "AGENT_GENERIC_RESPONSE";
+        json user_defined;
+        int simulation_status;
+    };
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(agent_generic_response, message_type, user_defined ,simulation_status)
+
     //TODO: remove, only for testing purposes
     struct simple_string {
             std::string message;
