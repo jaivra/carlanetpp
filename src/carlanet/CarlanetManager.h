@@ -152,6 +152,44 @@ public:
         return jsonResp.user_defined;
     }
 
+    // ACTOR GENERIC MESSAGE
+    template<typename S, typename T> T sendToAndGetFromCarla_actor_generic_message(S requestMessage){
+        json jsonRequestMessage = requestMessage;
+        json jsonResponseMessage = sendToAndGetFromCarla_actor_generic_message(jsonRequestMessage);
+        return jsonResponseMessage.get<T>();
+    }
+    json sendToAndGetFromCarla_actor_generic_message(json requestMessage){
+        carla_api::actor_generic_message toCarlaMessage;
+        toCarlaMessage.user_defined = requestMessage;
+        toCarlaMessage.timestamp = simTime().dbl();
+        json jsonMsg = toCarlaMessage;
+        EV << "socket -> " << jsonMsg.dump() <<  endl;
+        sendToCarla(jsonMsg);
+        auto jsonResp = receiveFromCarla<carla_api::actor_generic_response>(10.0);
+        json res = jsonResp;
+        EV << "socket <- " << res.dump() <<  endl;
+        return jsonResp.user_defined;
+    }
+
+    // AGENT GENERIC MESSAGE
+    template<typename S, typename T> T sendToAndGetFromCarla_agent_generic_message(S requestMessage){
+        json jsonRequestMessage = requestMessage;
+        json jsonResponseMessage = sendToAndGetFromCarla_agent_generic_message(jsonRequestMessage);
+        return jsonResponseMessage.get<T>();
+    }
+    json sendToAndGetFromCarla_agent_generic_message(json requestMessage){
+        carla_api::agent_generic_message toCarlaMessage;
+        toCarlaMessage.user_defined = requestMessage;
+        toCarlaMessage.timestamp = simTime().dbl();
+        json jsonMsg = toCarlaMessage;
+        EV << "socket -> " << jsonMsg.dump() <<  endl;
+        sendToCarla(jsonMsg);
+        auto jsonResp = receiveFromCarla<carla_api::agent_generic_response>(10.0);
+        json res = jsonResp;
+        EV << "socket <- " << res.dump() <<  endl;
+        return jsonResp.user_defined;
+    }
+
 };
 
 #endif
