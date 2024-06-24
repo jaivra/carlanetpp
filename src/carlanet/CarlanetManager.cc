@@ -140,6 +140,8 @@ void CarlanetManager::doSimulationTimeStep(){
     //carla_api::simple_string msg_wge;
     //msg_wge.message = "from omnet";
     //auto res = sendToAndGetFromCarla_world_generic_message<carla_api::simple_string, carla_api::simple_string>(msg_wge);
+    //auto res_actor = sendToAndGetFromCarla_actor_generic_message<carla_api::simple_string, carla_api::simple_string>(msg_wge);
+    //auto res_agent = sendToAndGetFromCarla_agent_generic_message<carla_api::simple_string, carla_api::simple_string>(msg_wge);
 
     //Update position of all nodes in response
 
