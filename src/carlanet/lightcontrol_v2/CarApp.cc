@@ -160,6 +160,7 @@ void CarApp::processPacket(Packet *pk){
         creationTimeTag->setCreationTime(simTime()); // store current time
         packet->insertAtBack(data);
         socket.sendTo(packet, destAddress, destPort);
+        EV_INFO << "send packet to: " << destAddress << " : " << destPort << endl;
     }
     else{
         EV_WARN << "Received an unexpected packet "<< UdpSocket::getReceivedPacketInfo(pk) <<endl;

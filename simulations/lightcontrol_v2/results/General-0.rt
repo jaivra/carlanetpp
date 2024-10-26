@@ -1,5 +1,7 @@
 +R #0  0s  Lightcontrol_v2.gnb  10.0.2.1  10.0.0.0/24  <unspec>  cellular
 +R #0  0s  Lightcontrol_v2.gnb  10.0.2.1  10.0.1.0/24  <unspec>  pppIf
 +R #0  0s  Lightcontrol_v2.gnb  10.0.2.1  10.0.2.0/24  <unspec>  pppMEHostIf
-+R #0  0s  Lightcontrol_v2.carlaNodelightController  10.0.0.9  127.0.0.0/8  <unspec>  lo0
-+R #0  0s  Lightcontrol_v2.carlaNodelightController  10.0.0.9  10.0.0.0/8  <unspec>  cellular
++R #0  0s  Lightcontrol_v2.VectorVehicle[0]  10.0.0.9  127.0.0.0/8  <unspec>  lo0
++R #0  0s  Lightcontrol_v2.VectorVehicle[0]  10.0.0.9  10.0.0.0/8  <unspec>  cellular
++R #0  0s  Lightcontrol_v2.carlaNodelightController  10.0.0.10  127.0.0.0/8  <unspec>  lo0
++R #0  0s  Lightcontrol_v2.carlaNodelightController  10.0.0.10  10.0.0.0/8  <unspec>  cellular

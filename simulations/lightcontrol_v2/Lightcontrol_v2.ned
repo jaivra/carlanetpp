@@ -57,7 +57,7 @@ network Lightcontrol_v2
             @display("p=100,225;is=vl");
         }
         
-        VectorVehicle[0]: NodeMobility {
+        VectorVehicle[1]: NodeMobility {
             @display("p=200,100");
         }
         

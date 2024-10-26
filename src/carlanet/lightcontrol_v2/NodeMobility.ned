@@ -24,5 +24,4 @@ module NodeMobility extends NRUe
 {
     parameters:
         mobility.typename = "CarlaInetMobility";
-
 }

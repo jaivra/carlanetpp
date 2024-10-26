@@ -65,6 +65,7 @@ void CarlanetManager::registerMobilityModule(CarlaInetMobility *mod){
     //const char* mobileNodeName = mod->getParentModule()->getFullName();
     //std::cout << "registerMobilityModule " << mobileNodeName <<  endl;
     modulesToTrack.insert(pair<string,CarlaInetMobility*>(mod->getCarlaId(), mod));
+    std::cout << "registerMobilityModule "<< mod->getCarlaId() << " " << mod->getCarlaActorType() <<  endl;
 }
 
 
@@ -72,6 +73,7 @@ void CarlanetManager::initializeCarla(){
     // conversion
     auto movingActorList = list<carla_api_base::init_actor>();
     for(auto elem: modulesToTrack){
+        std::cout << "elem: modulesToTrack " << static_cast<std::string>(elem.first) <<" " << static_cast<std::string>(elem.second->getCarlaActorType()) <<  endl;
         carla_api_base::init_actor actor;
         actor.actor_id = elem.first;
         actor.actor_type = elem.second->getCarlaActorType();
@@ -232,7 +234,7 @@ void CarlanetManager::createAndInitializeActor(carla_api_base::actor_position ne
     Coord velocity = Coord(newActor.velocity[0],newActor.velocity[1],newActor.velocity[2]);
     Quaternion rotation = Quaternion(EulerAngles(rad(newActor.rotation[0]),rad(newActor.rotation[1]),rad(newActor.rotation[2])));
     auto CarlaInetMobilityMod = check_and_cast<CarlaInetMobility *>(new_mod->getSubmodule("mobility"));
-    CarlaInetMobilityMod->preInitialize(newActor.actor_id, position, velocity, rotation); //DONE TODO: carlaid
+    CarlaInetMobilityMod->preInitialize(newActor.actor_id, newActor.type, position, velocity, rotation);
 
     // The INET visualizer listens to model change notifications on the
     // network object by default. We assume this is our parent.

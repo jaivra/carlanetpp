@@ -14,7 +14,7 @@ simple CarlaInetMobility extends MobilityBase {
         @signal[mobilityStateChanged](type=inet::MobilityBase);
         bool initFromDisplayString = default(true); // do not change this to false
         
-        
+        string carla_id = default("");
         string carlaActorType = default("car");
         
         object carlaActorConfiguration = default(parseJSON("{}"));

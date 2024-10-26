@@ -25,7 +25,7 @@ class CarlaInetMobility : public inet::MobilityBase
 {
 public:
     // Initialize the position, velocity, and rotation of the actor.
-    virtual void preInitialize(const std::string carlaID, const inet::Coord& position, const inet::Coord& velocity, const inet::Quaternion& rotation);
+    virtual void preInitialize(const std::string carlaID, const std::string type, const inet::Coord& position, const inet::Coord& velocity, const inet::Quaternion& rotation);
 
     // Overrides the base class function to perform initialization tasks at a specified stage.
     virtual void initialize(int stage) override;

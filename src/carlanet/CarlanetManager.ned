@@ -22,7 +22,7 @@ simple CarlanetManager
 		
 		//Parameters for dynamically generated actors
 		// IMPORTANT: all the node types have to use CarlaInetMobility (or module that inherits from it) as mobility module
-		string networkActiveModuleType;  		// TODO allow multiple type based on prefixes
+		string networkActiveModuleType = default("inet.node.base.NodeBase");  		// TODO allow multiple type based on prefixes
 		string networkPassiveModuleType = default("inet.node.base.NodeBase");  // TODO allow multiple type based on prefixes
 		
 		object moduleType;
