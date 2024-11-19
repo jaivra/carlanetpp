@@ -17,6 +17,9 @@
 #include "inet/transportlayer/contract/udp/UdpControlInfo_m.h"
 #include "inet/common/scenario/ScenarioManager.h"
 
+#include <thread>
+#include <chrono>
+
 
 Define_Module(CarlanetManager);
 
@@ -49,9 +52,6 @@ void CarlanetManager::initialize(int stage)
         moduleType = check_and_cast<cValueMap*>(par("moduleType").objectValue())->getFields();
         moduleName = check_and_cast<cValueMap*>(par("moduleName").objectValue())->getFields();
 
-        //TODO: remove
-        networkActiveModuleType = par("networkActiveModuleType").stringValue();
-        networkPassiveModuleType = par("networkPassiveModuleType").stringValue();
         connect();
     }
 
@@ -62,10 +62,8 @@ void CarlanetManager::initialize(int stage)
 
 
 void CarlanetManager::registerMobilityModule(CarlaInetMobility *mod){
-    //const char* mobileNodeName = mod->getParentModule()->getFullName();
-    //std::cout << "registerMobilityModule " << mobileNodeName <<  endl;
     modulesToTrack.insert(pair<string,CarlaInetMobility*>(mod->getCarlaId(), mod));
-    std::cout << "registerMobilityModule "<< mod->getCarlaId() << " " << mod->getCarlaActorType() <<  endl;
+    //std::cout << "registerMobilityModule "<< mod->getCarlaId() << " " << mod->getCarlaActorType() <<  endl;
 }
 
 
@@ -95,8 +93,6 @@ void CarlanetManager::initializeCarla(){
     msg.user_defined = getExtraInitParams();
     msg.timestamp = simTime().dbl();
 
-    //std::map<std::string,cValue> moduleType = check_and_cast<cValueMap*>(par("moduleType").objectValue())->getFields();
-    //std::map<std::string,cValue> moduleName = check_and_cast<cValueMap*>(par("moduleName").objectValue())->getFields();
     std::vector<std::string> intersection;
     for (const auto& e : moduleType){
         if (moduleName.find(e.first) != moduleName.end()) {
@@ -138,15 +134,7 @@ void CarlanetManager::doSimulationTimeStep(){
     json jsonResponse = response;
     EV << "socket <-" << jsonResponse.dump() << endl;
 
-    //TODO: remove, test world_generic_message
-    //carla_api::simple_string msg_wge;
-    //msg_wge.message = "from omnet";
-    //auto res = sendToAndGetFromCarla_world_generic_message<carla_api::simple_string, carla_api::simple_string>(msg_wge);
-    //auto res_actor = sendToAndGetFromCarla_actor_generic_message<carla_api::simple_string, carla_api::simple_string>(msg_wge);
-    //auto res_agent = sendToAndGetFromCarla_agent_generic_message<carla_api::simple_string, carla_api::simple_string>(msg_wge);
-
     //Update position of all nodes in response
-
     updateNodesPosition(response.actor_positions);
 }
 
